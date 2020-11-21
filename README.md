@@ -8,9 +8,9 @@ Je crée une classes Chilltime et son objet compagnion où se situent les consta
 
 Il y a 4 caches : 
 - private var ACTORS_NAMES    = Map\[Int, (String, String)\]()
-- private var ACTORS_IDS      = Map[(String, String), Int]()
-- private var ACTORS_MOVIES   = Map[Int, Set[(Int, String)]]()
-- private var MOVIES_DIRECTOR = Map[Int, (Int, String)]()
+- private var ACTORS_IDS      = Map\[(String, String), Int\]()
+- private var ACTORS_MOVIES   = Map\[Int, Set\[(Int, String)\]\]()
+- private var MOVIES_DIRECTOR = Map\[Int, (Int, String)\]()
     
 ### Schéma requête
 
@@ -46,10 +46,10 @@ Le cache est actualisé à chaque requête si l'item n'y est pas déjà.
 - Movie (id, name, director)
 - Director (id, name) 
 
-- private var ACTORS          = List[ActorPlus]()
-- private var ACTORS_IDS      = Map[(String, String), Int]()
-- private var ACTORS_MOVIES   = Map[ActorPlus, Set[MoviePlus]]()
-- private var MOVIES_DIRECTOR = Map[MoviePlus, DirectorPlus]()
+- private var ACTORS          = List\[ActorPlus\]()
+- private var ACTORS_IDS      = Map\[(String, String), Int\]()
+- private var ACTORS_MOVIES   = Map[ActorPlus, Set\[MoviePlus\]\]()
+- private var MOVIES_DIRECTOR = Map\[MoviePlus, DirectorPlus\]()
     
 ### Avantages
 
