@@ -28,11 +28,12 @@ class ChilltimePlus extends App {
                 writer.write(contents)
                 writer.close()
 
+                val actor = new ActorPlus(name, surname, id)
                 //cache
-                ChilltimePlus.ACTORS.::(new ActorPlus(name, surname, id))
+                ChilltimePlus.ACTORS = ChilltimePlus.ACTORS.::(actor)
                 ChilltimePlus.ACTORS_IDS   += (name, surname) -> id
 
-                return Some(new ActorPlus(name, surname, id))
+                return Some(actor)
             }
             return None
         }
@@ -44,13 +45,13 @@ class ChilltimePlus extends App {
         }
         else {
             var contents = new String()
-            if (Files.exists(Paths.get(s"data/actormovies${actor.id_}.txt"))) {
+            if (Files.exists(Paths.get(s"data/actormovies${actor.id}.txt"))) {
                 //use data from file if file exist
-                contents = Source.fromFile(s"data/actormovies${actor.id_}.txt").mkString
+                contents = Source.fromFile(s"data/actormovies${actor.id}.txt").mkString
             } else {
-                contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/discover/movie?api_key=${ChilltimePlus.API_KEY}&with_cast=${actor.id_}").mkString
+                contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/discover/movie?api_key=${ChilltimePlus.API_KEY}&with_cast=${actor.id}").mkString
                 //file
-                val writer = new PrintWriter(new File(s"data/actormovies${actor.id_}.txt"))
+                val writer = new PrintWriter(new File(s"data/actormovies${actor.id}.txt"))
                 writer.print(contents)
                 writer.close()
             }
@@ -102,12 +103,12 @@ class ChilltimePlus extends App {
 
     def request(actor1: ActorPlus, actor2: ActorPlus): Set[(DirectorPlus, MoviePlus)] = {
         var directorMovies = Set[(DirectorPlus, MoviePlus)]()
-        val movieActor1 = findActorMovies(findActor(actor1.name, actor1.surname).getOrElse(-1))
-        val movieActor2 = findActorMovies(findActor(actor2.name, actor2.surname).getOrElse(-1))
+        val movieActor1:Set[MoviePlus] = findActorMovies(actor1)
+        val movieActor2:Set[MoviePlus] = findActorMovies(actor2)
         //Set of movies where both actors played
         val commonActorsMovies = movieActor1 & movieActor2
         for (movie <- commonActorsMovies) {
-            var director:DirectorPlus = findMovieDirector(movie).getOrElse(-1)
+            var director:DirectorPlus = findMovieDirector(movie).getOrElse(new DirectorPlus(-1,""))
             directorMovies += ((director,movie))
         }
 
@@ -117,9 +118,9 @@ class ChilltimePlus extends App {
     def actorsMostPlayingTogether (): Map[(ActorPlus, ActorPlus), Int] = {
         var pairs = Map[(ActorPlus, ActorPlus), Int]()
         //key is the pairs of actors ids, value is the number of common movies
-        for (actor1 <- ChilltimePlus.ACTORS_MOVIES.keys.slice(0,ChilltimePlus.ACTORS_MOVIES.keys.size/2)) {
-            for (actor2 <- ChilltimePlus.ACTORS_MOVIES.keys.slice(ChilltimePlus.ACTORS_MOVIES.keys.size/2,ChilltimePlus.ACTORS_MOVIES.keys.size)) {
-                val nbCommonMovies = (ChilltimePlus.ACTORS_MOVIES(actor1) & ChilltimePlus.ACTORS_MOVIES(actor2)).size
+        for (actor1 <- ChilltimePlus.ACTORS.slice(0,ChilltimePlus.ACTORS.size/2)) {
+            for (actor2 <- ChilltimePlus.ACTORS.slice(ChilltimePlus.ACTORS.size/2,ChilltimePlus.ACTORS.size)) {
+                val nbCommonMovies = (findActorMovies(actor1) & findActorMovies(actor2)).size
                 pairs += (actor1, actor2) -> nbCommonMovies
             }
         }

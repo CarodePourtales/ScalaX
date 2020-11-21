@@ -1,11 +1,9 @@
 import java.io.PrintWriter
 import scala.io.Source
 
-object Test {
+object Test extends App {
 
-  def main(args: Array[String]) {
-
-    var chilltime = new ChilltimePlus()
+    var chilltime = new Chilltime()
 
     print(chilltime.findActorId("Streep", "Meryl"))
     print(chilltime.findActorId("Bloom", "Orlando"))
@@ -28,5 +26,5 @@ object Test {
     val actor4 = new ActorPlus("Kidman", "Nicole")
 
     print(chilltime.request(actor1, actor2))
-  }
+
 }

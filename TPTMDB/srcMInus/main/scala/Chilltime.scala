@@ -9,7 +9,7 @@ import java.nio.file.{Files, Paths}
 import scala.collection.immutable.ListMap
 
 
-class Chilltime extends App {
+class Chilltime extends App{
 
     def findActorId(name: String, surname: String): Option[Int] = {
         if (ChilltimePlus.ACTORS_IDS.contains((name,surname))) {
@@ -100,8 +100,8 @@ class Chilltime extends App {
 
     def request(actor1: ActorPlus, actor2: ActorPlus): Set[(String, String)] = {
         var directorMovies = Set[(String, String)]()
-        val movieActor1 = findActorMovies(findActorId(actor1.name, actor1.surname).getOrElse(-1))
-        val movieActor2 = findActorMovies(findActorId(actor2.name, actor2.surname).getOrElse(-1))
+        val movieActor1 = findActorMovies(actor1)
+        val movieActor2 = findActorMovies(actor2)
         //Set of movies where both actors played
         val commonActorsMovies = movieActor1 & movieActor2
         for ((idMovie,movie) <- commonActorsMovies) {
@@ -118,7 +118,7 @@ class Chilltime extends App {
         //key is the pairs of actors ids, value is the number of common movies
         for (actor1 <- ChilltimePlus.ACTORS_MOVIES.keys.slice(0,ChilltimePlus.ACTORS_MOVIES.keys.size/2)) {
             for (actor2 <- ChilltimePlus.ACTORS_MOVIES.keys.slice(ChilltimePlus.ACTORS_MOVIES.keys.size/2,ChilltimePlus.ACTORS_MOVIES.keys.size)) {
-                val nbCommonMovies = (ChilltimePlus.ACTORS_MOVIES(actor1) & ChilltimePlus.ACTORS_MOVIES(actor2)).size
+                val nbCommonMovies = (findActorMovies(actor1) & findActorMovies(actor2)).size
                 pairs += (ChilltimePlus.ACTORS_NAMES(actor1) , ChilltimePlus.ACTORS_NAMES(actor2)) -> nbCommonMovies
             }
         }
