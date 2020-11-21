@@ -46,6 +46,8 @@ Le cache est actualisé à chaque requête si l'item n'y est pas déjà.
 - Movie (id, name, director)
 - Director (id, name) 
 
+Ces nouvelles classes impliquent des caches différents, qui storent plus d'informations : 
+
 - private var ACTORS          = List\[ActorPlus\]()
 - private var ACTORS_IDS      = Map\[(String, String), Int\]()
 - private var ACTORS_MOVIES   = Map[ActorPlus, Set\[MoviePlus\]\]()
