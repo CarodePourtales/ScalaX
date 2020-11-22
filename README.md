@@ -1,5 +1,9 @@
 # ScalaX
 
+## To Test
+
+For both packages src and srcMinus there is an object Test, to run it create an Application and run
+
 ## Première implémentation 
 
 ### Classes et object compagnion
@@ -55,6 +59,7 @@ Ces nouvelles classes impliquent des caches différents, qui storent plus d'info
     
 ### Avantages
 
+- Configuration du toString => affichage des noms des acteurs, id ...
 - Propreté
 - Objets clairement définis
 - Factorisation de code
