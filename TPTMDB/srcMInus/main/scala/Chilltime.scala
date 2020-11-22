@@ -23,11 +23,6 @@ class Chilltime extends App{
             if (total_results > 0) {
                 val id = ((json4 \ "results") (0) \ "id" \\ classOf[JInt]) (0).toInt
 
-                //file
-                val writer = new PrintWriter(new File(s"data/actor${id}.txt"))
-                writer.write(contents)
-                writer.close()
-
                 //cache
                 Chilltime.ACTORS_NAMES += id -> (name, surname)
                 Chilltime.ACTORS_IDS   += (name, surname) -> id
