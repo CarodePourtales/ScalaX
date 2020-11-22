@@ -2,7 +2,9 @@
 
 ## To Test
 
-For both packages src and srcMinus there is an object Test, to run it create an Application and run
+Pour les deux versions (deux packages), il faut marquer le dossier scala du mainen tant de Sources Route puis créer une Application et run.
+
+srcMinus est la version sans classe, src est la meilleur version.
 
 ## Première implémentation 
 
