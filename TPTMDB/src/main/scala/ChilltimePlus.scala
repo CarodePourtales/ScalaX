@@ -23,11 +23,6 @@ class ChilltimePlus extends App {
             if (total_results > 0) {
                 val id = ((json4 \ "results") (0) \ "id" \\ classOf[JInt]) (0).toInt
 
-                //file
-                val writer = new PrintWriter(new File(s"data/actor${id}.txt"))
-                writer.write(contents)
-                writer.close()
-
                 val actor = new ActorPlus(name, surname, id)
                 //cache
                 ChilltimePlus.ACTORS = ChilltimePlus.ACTORS.::(actor)
@@ -75,12 +70,17 @@ class ChilltimePlus extends App {
             return Some(ChilltimePlus.MOVIES_DIRECTOR(movie))
         }
         else {
-            val contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/movie/${movie.id}/credits?api_key=${ChilltimePlus.API_KEY}").mkString
-
-            //file
-            val writer = new PrintWriter(new File(s"data/movie${movie.id}.txt"))
-            writer.print(contents)
-            writer.close()
+            var contents = new String()
+            if (Files.exists(Paths.get(s"data/movie${movie.id}.txt"))) {
+                //use data from file if file exist
+                contents = Source.fromFile(s"data/movie${movie.id}.txt").mkString
+            } else {
+                contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/movie/${movie.id}/credits?api_key=${ChilltimePlus.API_KEY}").mkString
+                //file
+                val writer = new PrintWriter(new File(s"data/movie${movie.id}.txt"))
+                writer.print(contents)
+                writer.close()
+            }
 
             val json4 = parse(contents)
             val crewTeam = (json4 \ "crew").children

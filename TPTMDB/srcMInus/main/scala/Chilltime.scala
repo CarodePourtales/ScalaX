@@ -12,12 +12,12 @@ import scala.collection.immutable.ListMap
 class Chilltime extends App{
 
     def findActorId(name: String, surname: String): Option[Int] = {
-        if (ChilltimePlus.ACTORS_IDS.contains((name,surname))) {
-            return Some(ChilltimePlus.ACTORS_IDS((name,surname)))
+        if (Chilltime.ACTORS_IDS.contains((name,surname))) {
+            return Some(Chilltime.ACTORS_IDS((name,surname)))
         }
         else {
             val query = URLEncoder.encode(name + ' ' + surname, "UTF-8")
-            val contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/search/person?api_key=${ChilltimePlus.API_KEY}&query=${query}").mkString
+            val contents = Source.fromURL(s"${Chilltime.BASE_URL}/search/person?api_key=${Chilltime.API_KEY}&query=${query}").mkString
             val json4 = parse(contents)
             val total_results = (json4 \ "total_results" \\ classOf[JInt]) (0)
             if (total_results > 0) {
@@ -29,8 +29,8 @@ class Chilltime extends App{
                 writer.close()
 
                 //cache
-                ChilltimePlus.ACTORS_NAMES += id -> (name, surname)
-                ChilltimePlus.ACTORS_IDS   += (name, surname) -> id
+                Chilltime.ACTORS_NAMES += id -> (name, surname)
+                Chilltime.ACTORS_IDS   += (name, surname) -> id
 
                 return Some(id)
             }
@@ -39,8 +39,8 @@ class Chilltime extends App{
     }
 
     def findActorMovies(id: Int): Set[(Int, String)] = {
-        if (ChilltimePlus.ACTORS_MOVIES.contains(id)) {
-            return ChilltimePlus.ACTORS_MOVIES(id)
+        if (Chilltime.ACTORS_MOVIES.contains(id)) {
+            return Chilltime.ACTORS_MOVIES(id)
         }
         else {
             var contents = new String()
@@ -48,7 +48,7 @@ class Chilltime extends App{
                 //use data from file if file exist
                 contents = Source.fromFile(s"data/actormovies${id}.txt").mkString
             } else {
-                contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/discover/movie?api_key=${ChilltimePlus.API_KEY}&with_cast=${id}").mkString
+                contents = Source.fromURL(s"${Chilltime.BASE_URL}/discover/movie?api_key=${Chilltime.API_KEY}&with_cast=${id}").mkString
                 //file
                 val writer = new PrintWriter(new File(s"data/actormovies${id}.txt"))
                 writer.print(contents)
@@ -64,23 +64,27 @@ class Chilltime extends App{
             }
 
             //cache
-            ChilltimePlus.ACTORS_MOVIES += id -> actorMovies
+            Chilltime.ACTORS_MOVIES += id -> actorMovies
             return actorMovies
         }
     }
 
     def findMovieDirector(id: Int): Option[(Int, String)] = {
-        if (ChilltimePlus.MOVIES_DIRECTOR.contains(id)) {
-            return Some(ChilltimePlus.MOVIES_DIRECTOR(id))
+        if (Chilltime.MOVIES_DIRECTOR.contains(id)) {
+            return Some(Chilltime.MOVIES_DIRECTOR(id))
         }
         else {
-            val contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/movie/${id}/credits?api_key=${ChilltimePlus.API_KEY}").mkString
-
-            //file
-            val writer = new PrintWriter(new File(s"data/movie${id}.txt"))
-            writer.print(contents)
-            writer.close()
-
+            var contents = new String()
+            if (Files.exists(Paths.get(s"data/movie${id}.txt"))) {
+                //use data from file if file exist
+                contents = Source.fromFile(s"data/movie${id}.txt").mkString
+            } else {
+                contents = Source.fromURL(s"${Chilltime.BASE_URL}/movie/${id}/credits?api_key=${Chilltime.API_KEY}").mkString
+                //file
+                val writer = new PrintWriter(new File(s"data/movie${id}.txt"))
+                writer.print(contents)
+                writer.close()
+            }
             val json4 = parse(contents)
             val crewTeam = (json4 \ "crew").children
             for (crew <- crewTeam) {
@@ -89,7 +93,7 @@ class Chilltime extends App{
                     val idDirector = (crew \ "id" \\ classOf[JInt]) (0).toInt
 
                     //cache
-                    ChilltimePlus.MOVIES_DIRECTOR += id -> (idDirector, name)
+                    Chilltime.MOVIES_DIRECTOR += id -> (idDirector, name)
 
                     return Some((idDirector, name))
                 }
@@ -98,7 +102,7 @@ class Chilltime extends App{
         }
     }
 
-    def request(actor1: ActorPlus, actor2: ActorPlus): Set[(String, String)] = {
+    def request(actor1: Int, actor2: Int): Set[(String, String)] = {
         var directorMovies = Set[(String, String)]()
         val movieActor1 = findActorMovies(actor1)
         val movieActor2 = findActorMovies(actor2)
@@ -116,10 +120,10 @@ class Chilltime extends App{
     def actorsMostPlayingTogether (): Map[((String, String), (String, String)), Int] = {
         var pairs = Map[((String, String), (String, String)), Int]()
         //key is the pairs of actors ids, value is the number of common movies
-        for (actor1 <- ChilltimePlus.ACTORS_MOVIES.keys.slice(0,ChilltimePlus.ACTORS_MOVIES.keys.size/2)) {
-            for (actor2 <- ChilltimePlus.ACTORS_MOVIES.keys.slice(ChilltimePlus.ACTORS_MOVIES.keys.size/2,ChilltimePlus.ACTORS_MOVIES.keys.size)) {
+        for (actor1 <- Chilltime.ACTORS_MOVIES.keys.slice(0,Chilltime.ACTORS_MOVIES.keys.size/2)) {
+            for (actor2 <- Chilltime.ACTORS_MOVIES.keys.slice(Chilltime.ACTORS_MOVIES.keys.size/2,Chilltime.ACTORS_MOVIES.keys.size)) {
                 val nbCommonMovies = (findActorMovies(actor1) & findActorMovies(actor2)).size
-                pairs += (ChilltimePlus.ACTORS_NAMES(actor1) , ChilltimePlus.ACTORS_NAMES(actor2)) -> nbCommonMovies
+                pairs += (Chilltime.ACTORS_NAMES(actor1) , Chilltime.ACTORS_NAMES(actor2)) -> nbCommonMovies
             }
         }
         //5 best couples of actors
