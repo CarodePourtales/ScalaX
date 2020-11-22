@@ -79,3 +79,4 @@ Ces nouvelles classes impliquent des caches différents, qui storent plus d'info
 ### Inconvénients
 
 - Plus de classes, plus gros projet pour une tâche peu compliquée 
+- Il a fallu redéfinir les equals et hashcodes pour l'intersection des Set
