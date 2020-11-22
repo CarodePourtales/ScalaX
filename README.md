@@ -1,3 +1,5 @@
+\author{Caroline de Pourtales}
+
 # ScalaX
 
 ## To Test
