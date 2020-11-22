@@ -2,7 +2,10 @@
 
 # ScalaX
 
-## To Test
+## Pour Tester
+
+J'ai préféré créer un objet Test avec une fonction Main pour y mettre tous mes tests car il y en a beaucoup et je préfère séparer les tests du code.
+
 
 Pour les deux versions (deux packages), il faut marquer le dossier scala du mainen tant de Sources Route puis créer une Application et run.
 
