@@ -10,37 +10,42 @@ For both packages src and srcMinus there is an object Test, to run it create an 
 
 Je crée une classes Chilltime et son objet compagnion où se situent les constantes : BASE_URL, API_KEY ainsi que les caches.
 
-Il y a 4 caches : 
-- private var ACTORS_NAMES    = Map\[Int, (String, String)\]()
-- private var ACTORS_IDS      = Map\[(String, String), Int\]()
-- private var ACTORS_MOVIES   = Map\[Int, Set\[(Int, String)\]\]()
-- private var MOVIES_DIRECTOR = Map\[Int, (Int, String)\]()
-    
 ### Schéma requête
 
-If we try to search  :
+Pour unr recherche :
 
 ```
 val contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/search/person?api_key=${ChilltimePlus.API_KEY}&query=${query}").mkString
 val json4 = parse(contents)
 val total_results = (json4 \ "total_results" \\ classOf[JInt]) (0)
 ```
-       
-If we try to learn more about an item, we use "discover"
 
-If we try to find a movie, we use "movie"
+Sinon pour plus d'informations sur un objet on utilise discover ou lieu de search.
+Et pour en apprendre plus sur un film, on utilise movie.
 
-### Utilisation de fichier 
-
-After each request, a file is generated to store the response of the request.
-
-To retrieve the movies where a specific actor played, we can look if the specific file exist, if not we will do a new request
 
 ### Utilisation du cache
 
-On crée des instances de caches dans l'objet comapagnion. 
+On crée des instances de caches dans l'objet compagnion. 
 
 Le cache est actualisé à chaque requête si l'item n'y est pas déjà.
+
+Il y a 4 caches : 
+- private var ACTORS_NAMES    = Map\[Int, (String, String)\]()
+- private var ACTORS_IDS      = Map\[(String, String), Int\]()
+- private var ACTORS_MOVIES   = Map\[Int, Set\[(Int, String)\]\]()
+- private var MOVIES_DIRECTOR = Map\[Int, (Int, String)\]()
+    
+    
+### Utilisation de fichier 
+
+À chaque requête un fichier contenant le résultat est crée. 
+
+L'avantage du fichier sur le cache c'est qu'il reste dans le projet même quand on relance l'app alors que le cache se réactualise à zéro.
+
+On utilise donc les données des fichiers quand on veut retrouver les données sur un movie ou sur les films d'un acteur. 
+
+Je n'utilise pas de fichier contenant les données sur un acteur dans la fonction findActor car le seul objectif de cette fonction est de trouver l'id de l'acteur, or pour enregistrer le fichier, il est mieux d'y mettre l'id dans le nom. Donc impossible d'enregistrer le fichier sans connaître l'id. 
 
 ## Deuxième implémentation 
 
