@@ -1,4 +1,4 @@
-\author{Caroline de Pourtales}
+# Caroline de Pourtales
 
 # ScalaX
 
