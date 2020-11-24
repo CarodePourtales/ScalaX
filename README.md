@@ -38,10 +38,10 @@ On crée des instances de caches dans l'objet compagnion.
 Le cache est actualisé à chaque requête si l'item n'y est pas déjà.
 
 Il y a 4 caches : 
-- private var ACTORS_NAMES    = Map\[Int, (String, String)\]()
-- private var ACTORS_IDS      = Map\[(String, String), Int\]()
-- private var ACTORS_MOVIES   = Map\[Int, Set\[(Int, String)\]\]()
-- private var MOVIES_DIRECTOR = Map\[Int, (Int, String)\]()
+- private var ACTORS_NAMES    = Map\[Int, (String, String)\]() pour associer un id d'actor à son nom complet (utile pour afficher son nom à la fin lorsuq'on regarde qui a joué le plus avec qui)
+- private var ACTORS_IDS      = Map\[(String, String), Int\]() pour stocker les requêtes lorsqu'on recherche l'id d'un acteur
+- private var ACTORS_MOVIES   = Map\[Int, Set\[(Int, String)\]\]() pour stocker les movies associé à un acteur
+- private var MOVIES_DIRECTOR = Map\[Int, (Int, String)\]() pour stocker le directeur associer à un movie
     
     
 ### Utilisation de fichier 
@@ -64,10 +64,12 @@ Je n'utilise pas de fichier contenant les données sur un acteur dans la fonctio
 
 Ces nouvelles classes impliquent des caches différents, qui storent plus d'informations : 
 
-- private var ACTORS          = List\[ActorPlus\]()
-- private var ACTORS_IDS      = Map\[(String, String), Int\]()
-- private var ACTORS_MOVIES   = Map[ActorPlus, Set\[MoviePlus\]\]()
-- private var MOVIES_DIRECTOR = Map\[MoviePlus, DirectorPlus\]()
+- private var ACTORS          = List\[ActorPlus\]() pour stocker la liste d'acteurs  (utile pour afficher son nom à la fin lorsuq'on regarde qui a joué le plus avec qui)
+- private var ACTORS_IDS      = Map\[(String, String), Int\]() pour stocker les requêtes lorsqu'on recherche l'id d'un acteur
+- private var ACTORS_MOVIES   = Map[ActorPlus, Set\[MoviePlus\]\]() pour stocker les movies associé à un acteur
+- private var MOVIES_DIRECTOR = Map\[MoviePlus, DirectorPlus\]() pour stocker le directeur associer à un movie
+    
+J'aurais aussi pu fusionner ACTORS et ACTORS_IDS en Map\[(String, String), ActorPlus\](), comme cela on retrouve toujours l'id d'un acteur si on a déjà cherché et en plus la liste des valeurs est la liste des acteurs mais j'ai préféré séparer les deux comme je ne les utilise pas ensemble.
     
 ### Avantages
 
