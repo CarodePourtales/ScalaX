@@ -6,7 +6,6 @@
 
 J'ai préféré créer un objet Test avec une fonction Main pour y mettre tous mes tests car il y en a beaucoup et je préfère séparer les tests du code.
 
-
 Pour les deux versions (deux packages), il faut marquer le dossier scala du mainen tant de Sources Route puis créer une Application et run.
 
 srcMinus est la version sans classe, src est la meilleur version.
@@ -19,17 +18,26 @@ Je crée une classes Chilltime et son objet compagnion où se situent les consta
 
 ### Schéma requête
 
-Pour unr recherche :
+Pour une recherche :
 
 ```
+val query = URLEncoder.encode("TEXTE_DE_RECHERCHE", "UTF-8")
 val contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/search/person?api_key=${ChilltimePlus.API_KEY}&query=${query}").mkString
 val json4 = parse(contents)
 val total_results = (json4 \ "total_results" \\ classOf[JInt]) (0)
 ```
 
 Sinon pour plus d'informations sur un objet on utilise discover ou lieu de search.
+
+```
+contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/discover/movie?api_key=${ChilltimePlus.API_KEY}&with_cast=${actor.id}").mkString
+```
+
 Et pour en apprendre plus sur un film, on utilise movie.
 
+```
+contents = Source.fromURL(s"${ChilltimePlus.BASE_URL}/movie/${movie.id}/credits?api_key=${ChilltimePlus.API_KEY}").mkString
+```
 
 ### Utilisation du cache
 
